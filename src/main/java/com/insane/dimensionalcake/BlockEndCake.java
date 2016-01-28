@@ -3,61 +3,43 @@ package com.insane.dimensionalcake;
 import java.util.Random;
 
 import net.minecraft.block.BlockCake;
-import net.minecraft.block.BlockEndPortal;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class BlockEndCake extends BlockCake {
-	@SideOnly(Side.CLIENT)
-	private IIcon[] icon;
+
 
 	public BlockEndCake()
 	{
 		super();
 		setCreativeTab(CreativeTabs.tabBlock);
-		this.setBlockName("blockEndCake");
+		this.setUnlocalizedName("blockEndCake");
+		this.setRegistryName("blockEndCake");
+		GameRegistry.registerBlock(this);
 	}
-
+	
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister register)
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ)
 	{
-		icon = new IIcon[4];
-
-		for (int i = 0; i < icon.length; i++)
-		{
-
-			icon[i] = register.registerIcon(DimensionalCake.MODID + ":endcake_" + i);
-		}
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta)
-	{
-		return side == 0 ? icon[side] : (side == 1 ? icon[side] : (meta > 0 && side == 4 ? icon[3] : icon[2]));
-	}
-
-	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9)
-	{
-		int meta = world.getBlockMetadata(x, y, z) - 1;
+		int meta = this.getMetaFromState(world.getBlockState(pos)) - 1;
 		ItemStack item = player.getCurrentEquippedItem();
 
 		if (player.capabilities.isCreativeMode)
 		{
 			if (item != null && item.getItem() == Items.ender_eye)
 			{
-				world.setBlockMetadataWithNotify(x, y, z, 0, 2);
+				world.setBlockState(pos, this.getStateFromMeta(0), 2);
 				return true;
 			}
 			else
@@ -68,18 +50,19 @@ public class BlockEndCake extends BlockCake {
 		}
 		else
 		{
+			System.out.println(((Integer)state.getValue(BITES)).intValue());
 			if (item != null && item.getItem() == Items.ender_eye)
 			{
 				if (meta >= 0)
 				{
-					world.setBlockMetadataWithNotify(x, y, z, meta, 2);
+					world.setBlockState(pos, this.getStateFromMeta(meta), 2);
 					--item.stackSize;
 					return true;
 				}
 			}
 			else
 			{
-				nomEndCake(world, x, y, z, player);
+				nomEndCake(world, pos, player);
 				return true;
 			}
 		}
@@ -87,11 +70,11 @@ public class BlockEndCake extends BlockCake {
 		return false;
 	}
 
-	private void nomEndCake(World world, int x, int y, int z, EntityPlayer player)
+	private void nomEndCake(World world, BlockPos pos, EntityPlayer player)
 	{
 		if (player.canEat(false) || DimensionalCake.eatCakeWhenFull)
 		{
-			int l = world.getBlockMetadata(x, y, z) + 1;
+			int l = this.getMetaFromState(world.getBlockState(pos)) + 1;
 
 			if (l >= 6)
 			{
@@ -100,14 +83,14 @@ public class BlockEndCake extends BlockCake {
 			else
 			{
 				player.getFoodStats().addStats(2, 0.1F);
-				world.setBlockMetadataWithNotify(x, y, z, l, 2);
-				if (world.provider.dimensionId == 0)
+				world.setBlockState(pos, this.getStateFromMeta(l), 2);
+				if (world.provider.getDimensionId() == 0)
 				{
-					if (!BlockEndPortal.field_149948_a)
-					{
-						player.addPotionEffect(new PotionEffect(Potion.resistance.id, 200, 1));
-					}
-					
+					player.addPotionEffect(new PotionEffect(Potion.resistance.id, 200, 1));					
+					player.travelToDimension(1);
+				}
+				if (world.provider.getDimensionId() == 1)
+				{
 					player.travelToDimension(1);
 				}
 			}
@@ -115,28 +98,28 @@ public class BlockEndCake extends BlockCake {
 	}
 
 	@Override
-	public int onBlockPlaced(World world, int x, int y, int z, int side, float hx, float hy, float hz, int meta)
+	public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
 	{
-		return meta = 5;
+		return this.getStateFromMeta(6);
 	}
 
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z)
+	public void onBlockAdded(World world, BlockPos pos, IBlockState state)
 	{
-		if (world.provider.dimensionId == 1)
+		if (world.provider.getDimensionId() == 1)
 		{
-			world.scheduleBlockUpdate(x, y, z, this, 12000);
+			world.scheduleBlockUpdate(pos, this, 0, 12000);
 		}
 	}
 
 	@Override
-	public void updateTick(World world, int x, int y, int z, Random rand)
+	public void updateTick(World world, BlockPos pos, IBlockState state, Random rand)
 	{
-		if (world.provider.dimensionId == 1)
+		if (world.provider.getDimensionId() == 1)
 		{
-			int meta = world.getBlockMetadata(x, y, z) - 1;
-			if (meta > 0) world.setBlockMetadataWithNotify(x, y, z, meta, 2);
-			world.scheduleBlockUpdate(x, y, z, this, 12000);
+			int meta = this.getMetaFromState(world.getBlockState(pos)) - 1;
+			if (meta > 0) world.setBlockState(pos, this.getStateFromMeta(meta), 2);
+			world.scheduleBlockUpdate(pos, this, 0, 12000);
 		}
 	}
 }
