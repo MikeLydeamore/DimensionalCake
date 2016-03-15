@@ -1,6 +1,5 @@
 package com.insane.dimensionalcake;
 
-import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -28,7 +27,7 @@ public class DimensionalCake {
 	public static Configuration config;
 	public static boolean eatCakeWhenFull;
 	
-	public static Block blockEndCake;
+	public static BlockEndCake blockEndCake;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
@@ -39,6 +38,9 @@ public class DimensionalCake {
 			config.save();
 		
 		blockEndCake = new BlockEndCake();
+		
+		proxy.initModels();
+		
 		
 		GameRegistry.addRecipe(new ItemStack(blockEndCake), new Object[]{"aaa","aba","aaa",'a',Items.ender_eye,'b',Items.cake});
 	}

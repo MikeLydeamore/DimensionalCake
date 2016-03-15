@@ -1,11 +1,19 @@
 {
+	"forge_marker": 1,
+	"defaults": {
+		"textures": { },
+		"model": "dimensionalcake:blockEndCake_full"
+	},
+	
     "variants": {
-        "bites=0": { "model": "dimensionalcake:blockEndCake_full" },
-        "bites=1": { "model": "dimensionalcake:blockEndCake_slice1" },
-        "bites=2": { "model": "dimensionalcake:blockEndCake_slice2" },
-        "bites=3": { "model": "dimensionalcake:blockEndCake_slice3" },
-        "bites=4": { "model": "dimensionalcake:blockEndCake_slice4" },
-        "bites=5": { "model": "dimensionalcake:blockEndCake_slice5" },
-        "bites=6": { "model": "dimensionalcake:blockEndCake_slice6" }
+        "bites": {
+        	0: { "model": "dimensionalcake:blockEndCake_full" },
+         	1: { "model": "dimensionalcake:blockEndCake_slice1" },
+        	2: { "model": "dimensionalcake:blockEndCake_slice2" },
+       		3: { "model": "dimensionalcake:blockEndCake_slice3" },
+        	4: { "model": "dimensionalcake:blockEndCake_slice4" },
+        	5: { "model": "dimensionalcake:blockEndCake_slice5" },
+        	6: { "model": "dimensionalcake:blockEndCake_slice6" }
+        }
     }
 }
