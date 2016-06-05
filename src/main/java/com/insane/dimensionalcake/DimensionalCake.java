@@ -42,7 +42,7 @@ public class DimensionalCake {
 		proxy.initModels();
 		
 		
-		GameRegistry.addRecipe(new ItemStack(blockEndCake), new Object[]{"aaa","aba","aaa",'a',Items.ender_eye,'b',Items.cake});
+		GameRegistry.addRecipe(new ItemStack(blockEndCake), new Object[]{"aaa","aba","aaa",'a',Items.ENDER_EYE,'b',Items.CAKE});
 	}
 	
 	@EventHandler

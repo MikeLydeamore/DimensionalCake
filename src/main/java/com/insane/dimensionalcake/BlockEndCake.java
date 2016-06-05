@@ -29,7 +29,7 @@ public class BlockEndCake extends BlockCake {
 	public BlockEndCake()
 	{
 		super();
-		setCreativeTab(CreativeTabs.tabBlock);
+		setCreativeTab(CreativeTabs.BUILDING_BLOCKS);
 		this.setUnlocalizedName("blockEndCake");
 		this.setRegistryName("blockEndCake");
 		GameRegistry.registerBlock(this);
@@ -42,7 +42,7 @@ public class BlockEndCake extends BlockCake {
 
 		if (player.capabilities.isCreativeMode)
 		{
-			if (item != null && item.getItem() == Items.ender_eye)
+			if (item != null && item.getItem() == Items.ENDER_EYE)
 			{
 				world.setBlockState(pos, this.getStateFromMeta(0), 2);
 				return true;
@@ -55,7 +55,7 @@ public class BlockEndCake extends BlockCake {
 		}
 		else
 		{
-			if (item != null && item.getItem() == Items.ender_eye)
+			if (item != null && item.getItem() == Items.ENDER_EYE)
 			{
 				if (meta >= 0)
 				{
@@ -133,7 +133,7 @@ public class BlockEndCake extends BlockCake {
 		for (int i = 0; i <= 6; i++)
 		{
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), i, 
-				new ModelResourceLocation("dimensionalcakes:blockEndCake", "inventory"));
+				new ModelResourceLocation("dimensionalcake:blockEndCake", "inventory"));
 		}
 	}
 }
